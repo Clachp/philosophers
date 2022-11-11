@@ -6,20 +6,16 @@
 /*   By: cchapon <cchapon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 19:30:15 by cchapon           #+#    #+#             */
-/*   Updated: 2022/11/09 19:40:01 by cchapon          ###   ########.fr       */
+/*   Updated: 2022/11/11 18:26:55 by cchapon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "philo.h"
 
-t_data	*init_philo(char **argv)
+time_t	get_time()
 {
-	t_data	*new;
+	struct timeval	t;
 
-	new = malloc(sizeof(t_data));
-	if (!new)
-		return (NULL);
-	new->content = content;
-	new->next = NULL;
-	return (new);
+	gettimeofday(&t, NULL);
+	return ((t.tv_sec * 1000) + t.tv_usec / 1000);
 }

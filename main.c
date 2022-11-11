@@ -6,7 +6,7 @@
 /*   By: cchapon <cchapon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 15:35:08 by cchapon           #+#    #+#             */
-/*   Updated: 2022/11/09 19:26:34 by cchapon          ###   ########.fr       */
+/*   Updated: 2022/11/11 18:39:23 by cchapon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,15 @@
 // argv[4] = time_to_sleep
 // argv[5] = number_of_time_each_philo_must_eat	
 
+void	*think_routine()
+{
+	write(1, "thinking routine\n", 18);
+}
+
 int	main(int argc, char **argv)
 {
 	t_data philo;
 	
 	
-	pthread_create()
 
 }
