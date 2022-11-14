@@ -6,7 +6,7 @@
 /*   By: cchapon <cchapon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 15:35:08 by cchapon           #+#    #+#             */
-/*   Updated: 2022/11/11 18:39:23 by cchapon          ###   ########.fr       */
+/*   Updated: 2022/11/14 18:50:50 by cchapon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,43 @@
 // argv[4] = time_to_sleep
 // argv[5] = number_of_time_each_philo_must_eat	
 
-void	*think_routine()
-{
-	write(1, "thinking routine\n", 18);
-}
-
 int	main(int argc, char **argv)
 {
-	t_data philo;
+	t_philo *philo;
+	t_data	data;
+	int	i;
 	
-	
+	if (check_arg(argv) == -1)
+	{
+		printf("Wrong input format\n");
+		return (0);
+	}
+	if (argc == 5 || argc == 6)
+	{
+		i = 0;
+		data = init_data(argv);
+		philo = init_philo(data);
 
+		printf("nb of philo : %d\n", data.nbr);
+		
+		while(i < data.nbr)
+		{
+			printf("philo nbr : %d\n", philo[i].id);
+			i++;
+		}
+		// if (argv[5])
+		// {
+		// 	repeat = ft_atoi(argv[5]);
+		// 	while (repeat)
+		// 	{
+		// 		//init_philo
+		// 		repeat--;
+		// 	}	
+		// }
+		
+	}
+	else
+		printf("Wrong argument number\n");
+	free(philo);
+	return (0);
 }

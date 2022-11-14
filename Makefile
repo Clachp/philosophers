@@ -4,13 +4,15 @@ CC = gcc
 
 CFLAGS = -Wall -Wextra -Werror -g3 -pthread
 
-SRCS = main.c
+SRCS = main.c \
+	init.c \
+	utils.c
 
 OBJ_DIR = obj
 
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 
-$(OBJ_DIR)/%.o: src/%.c
+$(OBJ_DIR)/%.o: %.c
 	@mkdir -p $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
