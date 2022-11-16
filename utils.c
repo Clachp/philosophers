@@ -6,16 +6,16 @@
 /*   By: cchapon <cchapon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 19:30:15 by cchapon           #+#    #+#             */
-/*   Updated: 2022/11/14 18:49:08 by cchapon          ###   ########.fr       */
+/*   Updated: 2022/11/16 16:11:33 by cchapon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "philo.h"
 
-int	get_time()
+time_t	get_time()
 {
 	struct timeval	t;
-	int				time;
+	time_t			time;
 
 	gettimeofday(&t, NULL);
 	time = (t.tv_sec * 1000) + t.tv_usec / 1000;
