@@ -35,40 +35,30 @@ void	*sleep_routine(void *arg)
 	return (0);
 }
 
-void	take_forks(void *arg)
+// forks = ressources partagees
+void	*take_forks(void *arg)
 {
-	t_philo *philo;
-	int		i;
-
+	t_philo	*philo;
 
 	philo = (t_philo*)arg;
-	i = 0;
-	while (i < philo->data->n)
-	{
-		philo[i].left_fork =
-	}
-	  
-	pthread_mutex_lock(philo[i].tid);
-
-
+	pthread_mutex_lock(philo->right_fork);
+	pthread_mutex_lock(&philo->left_fork);
+	printf("Philo %d has taken a fork\n", philo->id);
+	printf("Philo %d left fork : ", philo->id);
+	pthread_mutex_lock(&philo->left_fork);
+	pthread_mutex_lock(philo->right_fork);
+	return (NULL);
 }
 
 t_data	init_data(char **argv)
 {
 	t_data	data;
-	int		i;
 
-	i = 0;
 	data.n = ft_atoi(argv[1]);
 	data.time_to_die = ft_atoi(argv[2]);
 	data.time_to_eat = ft_atoi (argv[3]);
 	data.time_to_think = 0;
 	data.time_to_sleep = ft_atoi(argv[4]);
-	while (i < data.n)
-	{
-		pthread_mutex_init(&data.forks[i], NULL);
-		i++;
-	}
 	return (data);
 }
 
@@ -85,10 +75,14 @@ t_philo	*init_philo(t_data data)
 	while (i < data.n)
 	{
 		philo[i].id = i + 1;
-		philo[i].data->start_time = get_time();
-		pthread_create(&philo[i].tid, NULL, &sleep_routine, &philo->id);
+//		philo[i].data->start_time = get_time();
+		pthread_mutex_init(&philo[i].left_fork, NULL);
+		if (i == data.n - 1)
+			philo[i].right_fork = &philo[0].left_fork;
+		else
+			philo[i].right_fork = &philo[i + 1].left_fork;
+		pthread_create(&philo[i].tid, NULL, take_forks, &philo[i]);
 		i++;
 	}
 	return (philo);
-
 }

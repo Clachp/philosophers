@@ -6,7 +6,7 @@
 /*   By: cchapon <cchapon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 15:35:08 by cchapon           #+#    #+#             */
-/*   Updated: 2022/11/14 18:50:50 by cchapon          ###   ########.fr       */
+/*   Updated: 2022/11/17 14:27:19 by cchapon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,9 @@ int	main(int argc, char **argv)
 		data = init_data(argv);
 		philo = init_philo(data);
 
-		printf("nb of philo : %d\n", data.nbr);
+		printf("nb of philo : %d\n", data.n);
 		
-		while(i < data.nbr)
+		while(i < data.n)
 		{
 			printf("philo nbr : %d\n", philo[i].id);
 			i++;

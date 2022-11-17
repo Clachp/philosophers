@@ -6,7 +6,7 @@
 /*   By: cchapon <cchapon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 15:39:10 by cchapon           #+#    #+#             */
-/*   Updated: 2022/11/16 17:12:21 by cchapon          ###   ########.fr       */
+/*   Updated: 2022/11/17 17:50:16 by cchapon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,23 @@
 
 # include <stdio.h>
 # include <stdlib.h>
+# include <unistd.h>
 # include <string.h>
 # include <pthread.h>
 # include <sys/time.h>
 
-
-
+// data pour un philo
+typedef struct s_philo
+{
+	int				id; /*numero du philosophe*/
+	pthread_t		tid; /*identifiant du thread du philo*/
+	pthread_mutex_t	left_fork; /* fourchette du philo N */
+	pthread_mutex_t	*right_fork; /* fourchette du philo N + 1 */
+	struct s_data	*data;
+}	t_philo;
 // donnee partagees a protgeger par des mutex
 // + proteger les printf par des mutex
+
 typedef struct s_data
 {
 	int	n;
@@ -35,16 +44,6 @@ typedef struct s_data
 	pthread_mutex_t	*forks;
 	t_philo	*philo;
 }	t_data;
-
-// data pour un philo
-typedef struct s_philo
-{
-	int				id; /*numero du philosophe*/
-	pthread_t		tid; /*identifiant du thread du philo*/
-	pthread_mutex_t	*left_fork; /* fourchette du philo N */
-	pthread_mutex_t	*right_fork; /* fourchette du philo N + 1 */
-	t_data			*data;
-}	t_philo;
 
 int	ft_atoi(const char *nptr);
 time_t	get_time();
