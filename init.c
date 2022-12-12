@@ -26,15 +26,6 @@ int	check_arg(char **argv)
 	return (0);
 }
 
-void	*sleep_routine(void *arg)
-{
-	t_philo philo;
-	philo = *(t_philo*)arg;
-	int time = 200;
-	printf(" %dms, philo %d is sleeping\n", time, philo.id);
-	return (0);
-}
-
 // forks = ressources partagees
 void	*take_forks(void *arg)
 {
@@ -43,11 +34,22 @@ void	*take_forks(void *arg)
 	philo = (t_philo*)arg;
 	pthread_mutex_lock(philo->right_fork);
 	pthread_mutex_lock(&philo->left_fork);
-	printf("Philo %d has taken a fork\n", philo->id);
-	printf("Philo %d left fork : ", philo->id);
-	pthread_mutex_lock(&philo->left_fork);
-	pthread_mutex_lock(philo->right_fork);
+	if (&philo->left_fork)
+		printf("Philo %d has a left fork ", philo->id);
+	if (philo->right_fork)
+		printf("and a right fork\n");
+	pthread_mutex_unlock(&philo->left_fork);
+	pthread_mutex_unlock(philo->right_fork);
 	return (NULL);
+}
+
+void	*start_routine(void *arg)
+{
+	t_philo *philo;
+	philo = (t_philo*)arg;
+	take_forks(philo);
+	printf("%dms, philo %d is sleeping\n", philo->data->time_to_sleep, philo->id);
+	return (0);
 }
 
 t_data	init_data(char **argv)
@@ -75,13 +77,15 @@ t_philo	*init_philo(t_data data)
 	while (i < data.n)
 	{
 		philo[i].id = i + 1;
-//		philo[i].data->start_time = get_time();
+		philo[i].data = &data;
 		pthread_mutex_init(&philo[i].left_fork, NULL);
 		if (i == data.n - 1)
 			philo[i].right_fork = &philo[0].left_fork;
 		else
 			philo[i].right_fork = &philo[i + 1].left_fork;
-		pthread_create(&philo[i].tid, NULL, take_forks, &philo[i]);
+		pthread_mutex_init(philo[i].right_fork, NULL);
+		pthread_create(&philo[i].tid, NULL, start_routine, &philo[i]);
+		pthread_join(philo[i].tid, NULL);
 		i++;
 	}
 	return (philo);
