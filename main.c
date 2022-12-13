@@ -6,7 +6,7 @@
 /*   By: cchapon <cchapon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 15:35:08 by cchapon           #+#    #+#             */
-/*   Updated: 2022/12/12 16:55:12 by cchapon          ###   ########.fr       */
+/*   Updated: 2022/12/13 16:44:47 by cchapon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,24 @@
 // argv[4] = time_to_sleep
 // argv[5] = number_of_time_each_philo_must_eat	
 
+int	check_arg(char **argv)
+{
+	int	i;
+
+	i = 1;
+	while(argv[i])
+	{
+		if (ft_atoi(argv[i]) <= 0)
+			return (-1);
+		i++;
+	}
+	return (0);
+}
+
 int	main(int argc, char **argv)
 {
-	t_philo *philo;
 	t_data	data;
+	t_philo	*philo;
 	
 	if (check_arg(argv) == -1)
 	{
