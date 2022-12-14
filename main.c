@@ -6,7 +6,7 @@
 /*   By: cchapon <cchapon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 15:35:08 by cchapon           #+#    #+#             */
-/*   Updated: 2022/12/13 16:44:47 by cchapon          ###   ########.fr       */
+/*   Updated: 2022/12/14 15:58:29 by cchapon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,9 @@ int	check_arg(char **argv)
 
 int	main(int argc, char **argv)
 {
-	t_data	data;
+	t_data	*data;
 	t_philo	*philo;
-	
+
 	if (check_arg(argv) == -1)
 	{
 		printf("Wrong input format\n");
@@ -49,11 +49,20 @@ int	main(int argc, char **argv)
 	}
 	if (argc == 5 || argc == 6)
 	{
-		data = init_data(argv);
-		philo = init_philo(data);
+		data = malloc(sizeof(t_data));
+		if (!data)
+			return (0);
+		init_data(data, argv);
+		philo = malloc(sizeof(t_philo) * data->philo_nbr);
+		if (!philo)
+			return (0);
+		init_philo(data, philo);	
+		init_threads(philo, data);
 	}
 	else
 		printf("Wrong argument number\n");
 	free(philo);
+	free(data->forks);
+	free(data);
 	return (0);
 }
