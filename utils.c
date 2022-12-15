@@ -6,7 +6,7 @@
 /*   By: cchapon <cchapon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 19:30:15 by cchapon           #+#    #+#             */
-/*   Updated: 2022/11/16 16:11:33 by cchapon          ###   ########.fr       */
+/*   Updated: 2022/12/15 19:17:27 by cchapon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ time_t	get_time()
 	time_t			time;
 
 	gettimeofday(&t, NULL);
-	time = (t.tv_sec * 1000) + t.tv_usec / 1000;
+	time = (t.tv_sec * (time_t)1000) + (t.tv_usec / 1000);
 	return (time);
 }
 
