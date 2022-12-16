@@ -6,7 +6,8 @@ CFLAGS = -Wall -Wextra -Werror -fsanitize=thread -g3 -pthread
 
 SRCS = main.c \
 	init.c \
-	utils.c
+	utils.c \
+	routines.c
 
 OBJ_DIR = obj
 

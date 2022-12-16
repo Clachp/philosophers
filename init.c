@@ -12,68 +12,6 @@
 
 # include "philo.h"
 
-void	take_forks(t_philo philo)
-{
-	pthread_mutex_lock(philo.right_fork);
-	pthread_mutex_lock(&philo.left_fork);
-	printf("Philo %d has taken a fork\n", philo.id);
-	philo.is_eating = 1;
-}	
-
-void	drop_forks(t_philo philo)
-{
-	pthread_mutex_unlock(&philo.left_fork);
-	pthread_mutex_unlock(philo.right_fork);
-}
-
-
-void	eat(t_philo philo)
-{
-	time_t	time;
-
-	time = get_time() - philo.data->start_time;
-	take_forks(philo);
-	printf("%ldms, Philo %d is eating\n", time, philo.id);
-	usleep(philo.data->time_to_eat * 1000);
-	drop_forks(philo);
-}
-
-void	think(t_philo philo)
-{
-	time_t time;
-
-	time = get_time() - philo.data->start_time;
-	printf("%ld philo %d is thinking\n", time, philo.id);
-	usleep(time * 10);
-}
-
-void	go_sleep(t_philo philo)
-{
-	time_t	time;
-
-	time = get_time() - philo.data->start_time;
-	printf("%ld philo %d is sleeping\n", time, philo.id);
-	usleep(3000);
-}
-
-void	*start_routine(void *arg)
-{
-	t_philo philo;
-	philo = *(t_philo*)arg;
-	pthread_mutex_lock(&philo.data->lock);
-	while (philo.meals)
-	{
-		printf("PHILO CREATE : %d\n", philo.id);
-		think(philo);
-		go_sleep(philo);
-		eat(philo);
-		printf("meals nbr : %d\n", philo.meals);
-		philo.meals--;
-	}
-	pthread_mutex_unlock(&philo.data->lock);
-	return (0);
-}
-
 int	init_data(t_data *data, char **argv)
 {
 	int		i;
@@ -96,6 +34,7 @@ int	init_data(t_data *data, char **argv)
 		i++;
 	}
 	pthread_mutex_init(&data->lock, NULL);
+	pthread_mutex_init(&data->print, NULL);
 	return (0);
 }
 
@@ -110,6 +49,7 @@ int init_philo(t_data *data, t_philo *philo)
 		philo[i].data = data;
 		philo[i].meals = data->meals_nbr;
 		philo[i].is_eating = 0;
+		philo[i].has_to_die = 0;
 		philo[i].left_fork = data->forks[i];
 		if (i == data->philo_nbr - 1)
 			philo[i].right_fork = &philo[0].left_fork;
@@ -125,11 +65,12 @@ void	init_threads(t_philo *philo, t_data *data)
 	int	i;
 
 	data->start_time = get_time();
+	//pthread_create(&data->supervisor, NULL, supervise, &philo);
 	i = 0;
 	while (i < data->philo_nbr)
 	{
+		// dprintf(2, "%ld Hello i create philo %d\n", now(data->start_time), philo[i].id);
 		pthread_create(&philo[i].tid, NULL, start_routine, &philo[i]);
-		printf("Apres thred\n");
 		i++;
 	}
 	i = 0;
