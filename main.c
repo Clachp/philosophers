@@ -6,7 +6,7 @@
 /*   By: cchapon <cchapon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 15:35:08 by cchapon           #+#    #+#             */
-/*   Updated: 2022/12/14 15:58:29 by cchapon          ###   ########.fr       */
+/*   Updated: 2022/12/19 16:19:30 by cchapon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ int	check_arg(char **argv)
 int	main(int argc, char **argv)
 {
 	t_data	*data;
-	t_philo	*philo;
 
 	if (check_arg(argv) == -1)
 	{
@@ -53,15 +52,12 @@ int	main(int argc, char **argv)
 		if (!data)
 			return (0);
 		init_data(data, argv);
-		philo = malloc(sizeof(t_philo) * data->philo_nbr);
-		if (!philo)
-			return (0);
-		init_philo(data, philo);	
-		init_threads(philo, data);
+		init_philo(data);	
+		init_threads(data);
 	}
 	else
 		printf("Wrong argument number\n");
-	free(philo);
+	free(data->philo);
 	free(data->forks);
 	free(data);
 	return (0);

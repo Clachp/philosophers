@@ -19,7 +19,10 @@ int	init_data(t_data *data, char **argv)
 	data->philo_nbr = ft_atoi(argv[1]);
 	data->forks = malloc(sizeof(pthread_mutex_t) * data->philo_nbr);
 	if(!data->forks)
-		return (-1);	
+		return (-1);
+	data->philo = malloc(sizeof(t_philo) * data->philo_nbr);
+		if (!data->philo)
+			return (-1);
 	data->time_to_die = ft_atoi(argv[2]);
 	data->time_to_eat = ft_atoi (argv[3]);
 	data->time_to_sleep = ft_atoi(argv[4]);
@@ -38,45 +41,44 @@ int	init_data(t_data *data, char **argv)
 	return (0);
 }
 
-int init_philo(t_data *data, t_philo *philo)
+int init_philo(t_data *data)
 {
 	int		i;
 
 	i = 0;
 	while (i < data->philo_nbr)
 	{
-		philo[i].id = i + 1;
-		philo[i].data = data;
-		philo[i].meals = data->meals_nbr;
-		philo[i].is_eating = 0;
-		philo[i].has_to_die = 0;
-		philo[i].left_fork = data->forks[i];
+		data->philo[i].data = data;
+		data->philo[i].id = i + 1;
+		data->philo[i].meals = data->meals_nbr;
+		data->philo[i].is_eating = 0;
+		data->philo[i].has_to_die = 0;
+		data->philo[i].last_meal = 0;
+		data->philo[i].left_fork = &data->forks[i];
 		if (i == data->philo_nbr - 1)
-			philo[i].right_fork = &philo[0].left_fork;
+			data->philo[i].right_fork = &data->forks[0];
 		else
-			philo[i].right_fork = &philo[i + 1].left_fork;
+			data->philo[i].right_fork = &data->forks[i + 1];
 		i++;
 	}
 	return (0);
 }
 
-void	init_threads(t_philo *philo, t_data *data)
+void	init_threads(t_data *data)
 {
 	int	i;
 
 	data->start_time = get_time();
-	//pthread_create(&data->supervisor, NULL, supervise, &philo);
 	i = 0;
 	while (i < data->philo_nbr)
 	{
-		// dprintf(2, "%ld Hello i create philo %d\n", now(data->start_time), philo[i].id);
-		pthread_create(&philo[i].tid, NULL, start_routine, &philo[i]);
+		pthread_create(&data->philo[i].tid, NULL, start_routine, &data->philo[i]);
 		i++;
 	}
 	i = 0;
-	while (i < philo->data->philo_nbr)
+	while (i < data->philo_nbr)
 	{
-		pthread_join(philo[i].tid, NULL);
+		pthread_join(data->philo[i].tid, NULL);
 		i++;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: cchapon <cchapon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 15:39:10 by cchapon           #+#    #+#             */
-/*   Updated: 2022/12/16 21:55:30 by cchapon          ###   ########.fr       */
+/*   Updated: 2022/12/19 18:36:48 by cchapon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,11 @@ typedef struct s_data
 	int meals_nbr;
 	time_t	start_time;
 	time_t	timestsmp;
-	pthread_t	supervisor;
+	pthread_t	death_monitor;
+	pthread_t	meals_monitor;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	lock;
+	pthread_mutex_t	death_lock;
 	pthread_mutex_t	print;
 	struct s_philo	*philo;
 }	t_data;
@@ -45,7 +47,7 @@ typedef struct s_philo
 	time_t			last_meal;
 	int				has_to_die;
 	pthread_t		tid; 
-	pthread_mutex_t	left_fork; 
+	pthread_mutex_t	*left_fork; 
 	pthread_mutex_t	*right_fork; 
 	t_data	*data;
 }	t_philo;
@@ -57,8 +59,8 @@ int	check_arg(char **argv);
 //t_data	init_data(char **argv);
 int	init_data(t_data *data, char **argv);
 //t_philo	*init_philo(t_data data);
-int init_philo(t_data *data, t_philo *philo);
-void	init_threads(t_philo *philo, t_data *data);
+int init_philo(t_data *data);
+void	init_threads(t_data *data);
 void	*start_routine(void *arg);
 void	print_status(time_t time, t_philo *philo, char *status);
 void	*supervise(void *arg);
