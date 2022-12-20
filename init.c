@@ -70,6 +70,7 @@ void	init_threads(t_data *data)
 
 	data->start_time = get_time();
 	i = 0;
+	pthread_create(&data->death_monitor, NULL, supervise, data->philo);
 	while (i < data->philo_nbr)
 	{
 		pthread_create(&data->philo[i].tid, NULL, start_routine, &data->philo[i]);
@@ -81,4 +82,5 @@ void	init_threads(t_data *data)
 		pthread_join(data->philo[i].tid, NULL);
 		i++;
 	}
+	pthread_join(data->death_monitor, NULL);
 }
