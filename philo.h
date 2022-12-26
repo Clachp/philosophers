@@ -6,7 +6,7 @@
 /*   By: cchapon <cchapon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 15:39:10 by cchapon           #+#    #+#             */
-/*   Updated: 2022/12/20 19:15:38 by cchapon          ###   ########.fr       */
+/*   Updated: 2022/12/26 16:22:56 by cchapon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ typedef struct s_philo
 	int				meals;
 	int				is_eating;
 	time_t			last_meal;
-	pthread_mutex_t	lock;; 
+	pthread_mutex_t	plock;
 	int				has_to_die;
 	pthread_t		tid; 
 	pthread_mutex_t	*left_fork; 

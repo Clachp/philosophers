@@ -6,7 +6,7 @@
 /*   By: cchapon <cchapon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 16:51:39 by cchapon           #+#    #+#             */
-/*   Updated: 2022/12/20 19:16:07 by cchapon          ###   ########.fr       */
+/*   Updated: 2022/12/26 18:05:53 by cchapon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,10 @@ void	eat(t_philo *philo, pthread_mutex_t *fork_1, pthread_mutex_t *fork_2)
 	time = get_time() - philo->data->start_time;
 	print_status(time, philo, "is eating");
 	usleep(philo->data->time_to_eat * 1000);
-	pthread_mutex_lock(&philo->lock);
+	pthread_mutex_lock(&philo->data->lock);
 	philo->last_meal = get_time() - philo->data->start_time;
-	pthread_mutex_unlock(&philo->lock);
+	//printf("philo %d last meal in eat : %ld\n", philo->id, philo->last_meal);
+	pthread_mutex_unlock(&philo->data->lock);
 	pthread_mutex_unlock(fork_1);
 	pthread_mutex_unlock(fork_2);
 	

@@ -33,11 +33,11 @@ int	init_data(t_data *data, char **argv)
 	i = 0;
 	while (i < data->philo_nbr)
 	{
-		pthread_mutex_init(&data->forks[i], NULL);
+		pthread_mutex_init(&data->forks[i], NULL); // mutex des fourchettes sur la table
 		i++;
 	}
-	pthread_mutex_init(&data->lock, NULL);
-	pthread_mutex_init(&data->print, NULL);
+	pthread_mutex_init(&data->lock, NULL); // mutex locker des ressources partagees
+	pthread_mutex_init(&data->print, NULL); // mutex du message a printer
 	return (0);
 }
 
@@ -54,11 +54,12 @@ int init_philo(t_data *data)
 		data->philo[i].is_eating = 0;
 		data->philo[i].has_to_die = 0;
 		data->philo[i].last_meal = 0;
-		data->philo[i].left_fork = &data->forks[i];
+		data->philo[i].left_fork = &data->forks[i]; // pointe vers le mutex des fourchettes sur la table
 		if (i == data->philo_nbr - 1)
 			data->philo[i].right_fork = &data->forks[0];
 		else
 			data->philo[i].right_fork = &data->forks[i + 1];
+		pthread_mutex_init(&data->philo[i].plock, NULL);
 		i++;
 	}
 	return (0);
@@ -69,8 +70,8 @@ void	init_threads(t_data *data)
 	int	i;
 
 	data->start_time = get_time();
+	pthread_create(&data->death_monitor, NULL, supervise, data);
 	i = 0;
-	pthread_create(&data->death_monitor, NULL, supervise, data->philo);
 	while (i < data->philo_nbr)
 	{
 		pthread_create(&data->philo[i].tid, NULL, start_routine, &data->philo[i]);
@@ -83,4 +84,5 @@ void	init_threads(t_data *data)
 		i++;
 	}
 	pthread_join(data->death_monitor, NULL);
+	
 }
