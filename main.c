@@ -6,18 +6,18 @@
 /*   By: cchapon <cchapon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 15:35:08 by cchapon           #+#    #+#             */
-/*   Updated: 2023/01/03 15:22:35 by cchapon          ###   ########.fr       */
+/*   Updated: 2023/01/05 14:10:35 by cchapon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "philo.h"
+#include "philo.h"
 
 int	check_arg(char **argv)
 {
 	int	i;
 
 	i = 1;
-	while(argv[i])
+	while (argv[i])
 	{
 		if (ft_atoi_long(argv[i]) <= 0)
 			return (-1);
@@ -41,13 +41,11 @@ int	main(int argc, char **argv)
 		if (!data)
 			return (0);
 		init_data(data, argv);
-		init_philo(data);	
+		init_philo(data);
 		init_threads(data);
 	}
 	else
 		printf("Wrong argument number\n");
-	free(data->philo);
-	free(data->forks);
-	free(data);
+	destroy_data(data);
 	return (0);
 }

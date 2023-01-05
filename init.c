@@ -6,7 +6,7 @@
 /*   By: cchapon <cchapon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 18:32:26 by cchapon           #+#    #+#             */
-/*   Updated: 2023/01/03 16:52:00 by cchapon          ###   ########.fr       */
+/*   Updated: 2023/01/04 18:27:31 by cchapon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ int	init_data(t_data *data, char **argv)
 	data->time_to_eat = ft_atoi_long (argv[3]);
 	data->time_to_sleep = ft_atoi_long(argv[4]);
 	data->has_to_die = 0;
+	data->total = 0;
 	data->meals_nbr = -1;
 	if (argv[5])
 		data->meals_nbr = ft_atoi_long(argv[5]);
@@ -44,7 +45,8 @@ int	init_data(t_data *data, char **argv)
 		i++;
 	}
 	pthread_mutex_init(&data->lock, NULL);
-	pthread_mutex_init(&data->print, NULL);
+	pthread_mutex_init(&data->die, NULL);
+	pthread_mutex_init(&data->meals_lock, NULL);
 	return (0);
 }
 
@@ -57,7 +59,7 @@ int	init_philo(t_data *data)
 	{
 		data->philo[i].data = data;
 		data->philo[i].id = i + 1;
-		data->philo[i].meals = data->meals_nbr;
+		data->philo[i].meals = 0;
 		data->philo[i].is_eating = 0;
 		data->philo[i].last_meal = 0;
 		data->philo[i].left_fork = &data->forks[i];
@@ -65,7 +67,6 @@ int	init_philo(t_data *data)
 			data->philo[i].right_fork = &data->forks[0];
 		else
 			data->philo[i].right_fork = &data->forks[i + 1];
-		pthread_mutex_init(&data->philo[i].plock, NULL);
 		i++;
 	}
 	return (0);

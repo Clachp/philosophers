@@ -6,13 +6,13 @@
 /*   By: cchapon <cchapon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 19:30:15 by cchapon           #+#    #+#             */
-/*   Updated: 2023/01/03 16:42:20 by cchapon          ###   ########.fr       */
+/*   Updated: 2023/01/04 19:51:43 by cchapon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "philo.h"
+#include "philo.h"
 
-time_t	get_time()
+time_t	get_time(void)
 {
 	struct timeval	t;
 	time_t			time;
@@ -22,10 +22,29 @@ time_t	get_time()
 	return (time);
 }
 
-long long	ft_atoi_long(const char *nptr)
+time_t	now(t_data *data)
+{
+	return (get_time() - data->start_time);
+}
+
+int	ft_strcmp(char *s1, char *s2)
 {
 	int	i;
-	int	s;
+
+	i = 0;
+	while (s1[i] || s2[i])
+	{
+		if (s1[i] != s2[i])
+			return (s1[i] - s2[i]);
+		i++;
+	}
+	return (s1[i] - s2[i]);
+}
+
+long long	ft_atoi_long(const char *nptr)
+{
+	int			i;
+	int			s;
 	long long	r;
 
 	if (nptr == NULL)
@@ -51,9 +70,15 @@ long long	ft_atoi_long(const char *nptr)
 
 void	print_status(time_t time, t_philo *philo, char *status)
 {
-	pthread_mutex_lock(&philo->data->print);
+	pthread_mutex_lock(&philo->data->die);
 	if (philo->data->has_to_die == 0)
 		printf("%ldms philo %d %s\n", time, philo->id, status);
-	pthread_mutex_unlock(&philo->data->print);
+	pthread_mutex_lock(&philo->data->meals_lock);
+	if (ft_strcmp(status, "is eating") == 0)
+	{
+		philo->meals++;
+		philo->is_eating = 1;
+	}
+	pthread_mutex_unlock(&philo->data->meals_lock);
+	pthread_mutex_unlock(&philo->data->die);
 }
-	
