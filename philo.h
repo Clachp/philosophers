@@ -6,7 +6,7 @@
 /*   By: cchapon <cchapon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 15:39:10 by cchapon           #+#    #+#             */
-/*   Updated: 2023/01/05 14:10:17 by cchapon          ###   ########.fr       */
+/*   Updated: 2023/01/05 15:30:03 by cchapon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,17 +50,32 @@ typedef struct s_philo
 	t_data			*data;
 }	t_philo;
 
-long long	ft_atoi_long(const char *nptr);
-time_t		get_time(void);
-int			check_arg(char **argv);
+/* INIT*/
+int			allocate_struct(t_data *data);
+void		throw_error(char *str, t_data *data);
 int			init_data(t_data *data, char **argv);
-int			init_philo(t_data *data);
+void		init_philo(t_data *data);
 void		init_threads(t_data *data);
-void		*start_routine(void *arg);
-void		print_status(time_t time, t_philo *philo, char *status);
-void		*supervise(void *arg);
+
+/* UTILS*/
+time_t		get_time(void);
 time_t		now(t_data *data);
-void	destroy_data(t_data *data);
-void	throw_error(char *str, t_data *data);
+int			ft_strcmp(char *s1, char *s2);
+long long	ft_atoi_long(const char *nptr);
+void		print_status(time_t time, t_philo *philo, char *status);
+
+/* ROUTINES UTILS*/
+void		go_sleep(t_philo *philo);
+void		eat(t_philo *philo, pthread_mutex_t *frk_1, pthread_mutex_t *frk_2);
+int			set_has_to_die(t_data *data, t_philo philo);
+
+/* ROUTINES */
+void		*supervise(void *arg);
+void		*solo_routine(void *arg);
+void		*start_routine(void *arg);
+
+/* MAIN*/
+int			check_arg(char **argv);
+void		destroy_data(t_data *data);
 
 #endif
