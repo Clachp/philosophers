@@ -6,7 +6,7 @@
 /*   By: cchapon <cchapon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 16:51:39 by cchapon           #+#    #+#             */
-/*   Updated: 2023/01/09 16:33:23 by cchapon          ###   ########.fr       */
+/*   Updated: 2023/01/09 17:21:49 by cchapon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,21 +20,13 @@ void	go_sleep(t_philo *philo)
 
 void	think(t_philo *philo)
 {
-	int	think_time;
-	int	else_time;
+	long long	temp;
 
 	print_status(now(philo->data), philo, "is thinking");
-	think_time = philo->data->time_to_eat - philo->data->time_to_sleep - 100;
-	else_time = philo->data->time_to_die - philo->data->time_to_eat - \
-	philo->data->time_to_sleep;
-	if (think_time <= 0)
-	{
-		if (else_time - 10 > 0)
-			ft_usleep(philo->data, else_time - 10);
-	}
-	else
-		ft_usleep(philo->data, philo->data->time_to_eat - \
-		philo->data->time_to_sleep - 10);
+	temp = (philo->data->time_to_die - \
+	(philo->data->time_to_eat + philo->data->time_to_sleep)) / 2;
+	if (temp >= 0)
+		ft_usleep(philo->data, temp);
 }
 
 int	set_has_to_die(t_data *data, t_philo philo)

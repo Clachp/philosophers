@@ -6,7 +6,7 @@
 /*   By: cchapon <cchapon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/16 20:02:14 by cchapon           #+#    #+#             */
-/*   Updated: 2023/01/09 16:56:40 by cchapon          ###   ########.fr       */
+/*   Updated: 2023/01/09 17:51:01 by cchapon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	*solo_routine(void *arg)
 	return (NULL);
 }
 
-void	*start_routine(void *arg)
+/*void	*start_routine(void *arg)
 {
 	t_philo	*philo;
 
@@ -55,7 +55,7 @@ void	*start_routine(void *arg)
 		{
 			philo->data->total++;
 			pthread_mutex_unlock(&philo->data->meals_lock);
-			break ;
+			return (0);
 		}
 		pthread_mutex_unlock(&philo->data->meals_lock);
 		if (philo->id % 2)
@@ -64,5 +64,31 @@ void	*start_routine(void *arg)
 			eat(philo, philo->left_fork, philo->right_fork);
 	}
 	pthread_mutex_unlock(&philo->data->die);
+	return (0);
+}*/
+
+void	*start_routine(void *arg)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *)arg;
+	while (1)
+	{
+		pthread_mutex_lock(&philo->data->die);
+		if (philo->data->has_to_die == 1)
+			return (pthread_mutex_unlock(&philo->data->die), NULL);
+		pthread_mutex_unlock(&philo->data->die);
+		pthread_mutex_lock(&philo->data->meals_lock);
+		if (philo->meals == philo->data->meals_nbr)
+		{
+			philo->data->total++;
+			return (pthread_mutex_unlock(&philo->data->meals_lock), NULL);
+		}
+		pthread_mutex_unlock(&philo->data->meals_lock);
+		if (philo->id % 2)
+			eat(philo, philo->right_fork, philo->left_fork);
+		else
+			eat(philo, philo->left_fork, philo->right_fork);
+	}
 	return (0);
 }
