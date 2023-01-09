@@ -6,7 +6,7 @@
 /*   By: cchapon <cchapon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 18:32:26 by cchapon           #+#    #+#             */
-/*   Updated: 2023/01/09 15:15:11 by cchapon          ###   ########.fr       */
+/*   Updated: 2023/01/09 16:52:20 by cchapon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,25 +89,22 @@ void	init_philo(t_data *data)
 
 void	init_threads(t_data *data)
 {
-	int	i;
-
 	data->start_time = get_time();
 	if (data->philo_nbr == 1)
 	{
 		if (pthread_create(&data->philo->tid, NULL, solo_routine, \
 		data->philo) != 0)
 			return (throw_error("Error creating thread", data));
+		pthread_join(data->philo->tid, NULL);
 		return ;
 	}
 	if (pthread_create(&data->monitor, NULL, supervise, data) != 0)
 		return (throw_error("Error creating thread", data));
-	i = 0;
-	while (i < data->philo_nbr)
+	while (data->thread_nbr < data->philo_nbr)
 	{
-		if (pthread_create(&data->philo[i].tid, NULL, start_routine, \
-		&data->philo[i]) != 0)
+		if (pthread_create(&data->philo[data->thread_nbr].tid, NULL, \
+		start_routine, &data->philo[data->thread_nbr]) != 0)
 			return (throw_error("Error creating thread", data));
 		data->thread_nbr++;
-		i++;
 	}
 }

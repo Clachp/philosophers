@@ -6,7 +6,7 @@
 /*   By: cchapon <cchapon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 15:35:08 by cchapon           #+#    #+#             */
-/*   Updated: 2023/01/09 15:15:58 by cchapon          ###   ########.fr       */
+/*   Updated: 2023/01/09 16:08:45 by cchapon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,16 @@ int	check_arg(char **argv)
 	int	i;
 
 	i = 1;
-	if (argv[5] && ft_atoi_long(argv[5]) == 0)
-	{
-		printf("\n");
-		return (0);
-	}
 	while (argv[i])
 	{
 		if (ft_atoi_long(argv[i]) <= 0)
+		{
+			if (i == 5 && ft_atoi_long(argv[i]) == 0)
+				printf("Philosophers die if they have no meals\n");
+			else
+				printf("Wrong input format\n");
 			return (-1);
+		}
 		i++;
 	}
 	return (0);
@@ -61,10 +62,7 @@ int	main(int argc, char **argv)
 	t_data	*data;
 
 	if (check_arg(argv) == -1)
-	{
-		printf("Wrong input format\n");
 		return (0);
-	}
 	if (argc == 5 || argc == 6)
 	{
 		data = malloc(sizeof(t_data));

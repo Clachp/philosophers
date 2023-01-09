@@ -6,7 +6,7 @@
 /*   By: cchapon <cchapon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/16 20:02:14 by cchapon           #+#    #+#             */
-/*   Updated: 2023/01/09 14:43:46 by cchapon          ###   ########.fr       */
+/*   Updated: 2023/01/09 16:56:40 by cchapon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,9 @@ void	*solo_routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	pthread_mutex_lock(philo->right_fork);
-	print_status(now(philo->data), philo, "has taken a fork");
+	printf("%ldms philo %d has taken a fork\n", now(philo->data), philo->id);
 	ft_usleep(philo->data, philo->data->time_to_die);
-	print_status(now(philo->data), philo, "died");
-	philo->data->has_to_die = 1;
-	pthread_mutex_unlock(philo->right_fork);
+	printf("%ldms philo %d died\n", now(philo->data), philo->id);
 	return (NULL);
 }
 
