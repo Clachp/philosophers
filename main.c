@@ -6,7 +6,7 @@
 /*   By: cchapon <cchapon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 15:35:08 by cchapon           #+#    #+#             */
-/*   Updated: 2023/01/05 15:44:25 by cchapon          ###   ########.fr       */
+/*   Updated: 2023/01/09 15:15:58 by cchapon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,11 @@ int	check_arg(char **argv)
 	int	i;
 
 	i = 1;
+	if (argv[5] && ft_atoi_long(argv[5]) == 0)
+	{
+		printf("\n");
+		return (0);
+	}
 	while (argv[i])
 	{
 		if (ft_atoi_long(argv[i]) <= 0)
@@ -31,7 +36,7 @@ void	destroy_data(t_data *data)
 	int	i;
 
 	i = 0;
-	while (i < data->philo_nbr)
+	while (i < data->thread_nbr)
 	{
 		pthread_join(data->philo[i].tid, NULL);
 		i++;
@@ -43,7 +48,7 @@ void	destroy_data(t_data *data)
 		pthread_mutex_destroy(&data->forks[i]);
 		i++;
 	}
-	pthread_mutex_destroy(&data->lock);
+	pthread_mutex_destroy(&data->eating_lock);
 	pthread_mutex_destroy(&data->die);
 	pthread_mutex_destroy(&data->meals_lock);
 	free(data->philo);

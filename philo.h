@@ -6,7 +6,7 @@
 /*   By: cchapon <cchapon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 15:39:10 by cchapon           #+#    #+#             */
-/*   Updated: 2023/01/05 15:30:03 by cchapon          ###   ########.fr       */
+/*   Updated: 2023/01/09 15:14:46 by cchapon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,12 @@ typedef struct s_data
 	int				meals_nbr;
 	int				total;
 	int				has_to_die;
+	int				thread_nbr;
 	time_t			start_time;
 	pthread_t		monitor;
 	pthread_mutex_t	meals_lock;
 	pthread_mutex_t	*forks;
-	pthread_mutex_t	lock;
+	pthread_mutex_t	eating_lock;
 	pthread_mutex_t	die;
 	struct s_philo	*philo;
 }	t_data;
@@ -60,14 +61,15 @@ void		init_threads(t_data *data);
 /* UTILS*/
 time_t		get_time(void);
 time_t		now(t_data *data);
+void		ft_usleep(t_data *data, time_t time);
 int			ft_strcmp(char *s1, char *s2);
 long long	ft_atoi_long(const char *nptr);
-void		print_status(time_t time, t_philo *philo, char *status);
 
-/* ROUTINES UTILS*/
+/* ROUTINES_UTILS*/
 void		go_sleep(t_philo *philo);
 void		eat(t_philo *philo, pthread_mutex_t *frk_1, pthread_mutex_t *frk_2);
 int			set_has_to_die(t_data *data, t_philo philo);
+void		print_status(time_t time, t_philo *philo, char *status);
 
 /* ROUTINES */
 void		*supervise(void *arg);

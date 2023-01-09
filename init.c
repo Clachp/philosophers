@@ -6,7 +6,7 @@
 /*   By: cchapon <cchapon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 18:32:26 by cchapon           #+#    #+#             */
-/*   Updated: 2023/01/05 16:21:44 by cchapon          ###   ########.fr       */
+/*   Updated: 2023/01/09 15:15:11 by cchapon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ int	init_data(t_data *data, char **argv)
 	data->time_to_eat = ft_atoi_long (argv[3]);
 	data->time_to_sleep = ft_atoi_long(argv[4]);
 	data->has_to_die = 0;
+	data->thread_nbr = 0;
 	data->total = 0;
 	data->meals_nbr = -1;
 	if (argv[5])
@@ -57,7 +58,7 @@ int	init_data(t_data *data, char **argv)
 		pthread_mutex_init(&data->forks[i], NULL);
 		i++;
 	}
-	pthread_mutex_init(&data->lock, NULL);
+	pthread_mutex_init(&data->eating_lock, NULL);
 	pthread_mutex_init(&data->die, NULL);
 	pthread_mutex_init(&data->meals_lock, NULL);
 	return (0);
@@ -96,7 +97,6 @@ void	init_threads(t_data *data)
 		if (pthread_create(&data->philo->tid, NULL, solo_routine, \
 		data->philo) != 0)
 			return (throw_error("Error creating thread", data));
-		pthread_join(data->philo->tid, NULL);
 		return ;
 	}
 	if (pthread_create(&data->monitor, NULL, supervise, data) != 0)
@@ -107,6 +107,7 @@ void	init_threads(t_data *data)
 		if (pthread_create(&data->philo[i].tid, NULL, start_routine, \
 		&data->philo[i]) != 0)
 			return (throw_error("Error creating thread", data));
+		data->thread_nbr++;
 		i++;
 	}
 }

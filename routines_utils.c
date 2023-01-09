@@ -6,7 +6,7 @@
 /*   By: cchapon <cchapon@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/16 16:51:39 by cchapon           #+#    #+#             */
-/*   Updated: 2023/01/05 16:15:23 by cchapon          ###   ########.fr       */
+/*   Updated: 2023/01/09 14:36:19 by cchapon          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,52 @@
 void	go_sleep(t_philo *philo)
 {
 	print_status(now(philo->data), philo, "is sleeping");
-	usleep(philo->data->time_to_sleep * 1000);
+	ft_usleep(philo->data, philo->data->time_to_sleep);
+}
+
+void	think(t_philo *philo)
+{
+	int	think_time;
+	int	else_time;
+
+	print_status(now(philo->data), philo, "is thinking");
+	think_time = philo->data->time_to_eat - philo->data->time_to_sleep - 100;
+	else_time = philo->data->time_to_die - philo->data->time_to_eat - \
+	philo->data->time_to_sleep;
+	if (think_time <= 0)
+	{
+		if (else_time - 10 > 0)
+			ft_usleep(philo->data, else_time - 10);
+	}
+	else
+		ft_usleep(philo->data, philo->data->time_to_eat - \
+		philo->data->time_to_sleep - 10);
+}
+
+int	set_has_to_die(t_data *data, t_philo philo)
+{
+	pthread_mutex_lock(&data->meals_lock);
+	if (data->total == data->meals_nbr)
+	{
+		pthread_mutex_lock(&data->die);
+		data->has_to_die = 1;
+		pthread_mutex_unlock(&data->die);
+		pthread_mutex_unlock(&data->meals_lock);
+		return (1);
+	}
+	if ((now(data) - philo.last_meal > data->time_to_die && \
+	philo.is_eating == 0))
+	{
+		if (philo.meals < data->meals_nbr)
+			print_status(now(data), &philo, "died");
+		pthread_mutex_lock(&data->die);
+		data->has_to_die = 1;
+		pthread_mutex_unlock(&data->die);
+		pthread_mutex_unlock(&data->meals_lock);
+		return (1);
+	}
+	pthread_mutex_unlock(&data->meals_lock);
+	return (0);
 }
 
 void	eat(t_philo *philo, pthread_mutex_t *frk_1, pthread_mutex_t *frk_2)
@@ -25,42 +70,32 @@ void	eat(t_philo *philo, pthread_mutex_t *frk_1, pthread_mutex_t *frk_2)
 	pthread_mutex_lock(frk_2);
 	print_status(now(philo->data), philo, "has taken a fork");
 	print_status(now(philo->data), philo, "is eating");
-	pthread_mutex_lock(&philo->data->lock);
-	philo->last_meal = now(philo->data);
-	pthread_mutex_unlock(&philo->data->lock);
-	usleep(philo->data->time_to_eat * 1000);
+	ft_usleep(philo->data, philo->data->time_to_eat);
 	pthread_mutex_unlock(frk_1);
 	pthread_mutex_unlock(frk_2);
-	pthread_mutex_lock(&philo->data->meals_lock);
+	pthread_mutex_lock(&philo->data->eating_lock);
 	philo->is_eating = 0;
-	pthread_mutex_unlock(&philo->data->meals_lock);
+	pthread_mutex_unlock(&philo->data->eating_lock);
 	go_sleep(philo);
-	print_status(now(philo->data), philo, "is thinking");
+	usleep(100);
+	think(philo);
 }
 
-int	set_has_to_die(t_data *data, t_philo philo)
+void	print_status(time_t time, t_philo *philo, char *status)
 {
-	pthread_mutex_lock(&data->lock);
-	if (data->total == data->meals_nbr)
+	pthread_mutex_lock(&philo->data->die);
+	if (philo->data->has_to_die == 0)
+		printf("%ld %d %s\n", time, philo->id, status);
+	pthread_mutex_unlock(&philo->data->die);
+	if (ft_strcmp(status, "is eating") == 0)
 	{
-		pthread_mutex_lock(&data->die);
-		data->has_to_die = 1;
-		pthread_mutex_unlock(&data->lock);
-		pthread_mutex_unlock(&data->die);
-		return (1);
+		pthread_mutex_lock(&philo->data->meals_lock);
+		philo->last_meal = now(philo->data);
+		if (philo->data->meals_nbr > -1)
+			philo->meals++;
+		pthread_mutex_lock(&philo->data->eating_lock);
+		philo->is_eating = 1;
+		pthread_mutex_unlock(&philo->data->eating_lock);
+		pthread_mutex_unlock(&philo->data->meals_lock);
 	}
-	if ((now(data) - philo.last_meal > data->time_to_die && \
-	philo.is_eating == 0))
-	{
-		pthread_mutex_unlock(&data->lock);
-		printf("philo>meals : %d || meals_nbr : %d\n", philo.meals, data->meals_nbr);
-		if (philo.meals < data->meals_nbr)
-			print_status(now(data), data->philo, "died");
-		pthread_mutex_lock(&data->die);
-		data->has_to_die = 1;
-		pthread_mutex_unlock(&data->die);
-		return (1);
-	}
-	pthread_mutex_unlock(&data->lock);
-	return (0);
 }
